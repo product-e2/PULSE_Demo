@@ -47,13 +47,15 @@ function reducer(state, action) {
         case 1:
           return { ...base, pageType: state.pageType, widgetVisible: true, widgetOpen: false }
         case 2:
-          return { ...base, pageType: state.pageType, widgetVisible: true, widgetOpen: true }
+          return { ...base, pageType: state.pageType, widgetVisible: true, widgetOpen: true, adActivated: true, pageDetected: true }
         case 3:
           return {
             ...base,
             pageType: state.pageType,
             widgetVisible: true,
             widgetOpen: true,
+            adActivated: true,
+            pageDetected: true,
             predictionsLocked: true,
             predictions: [
               { answer: 'Yes', correct: true },

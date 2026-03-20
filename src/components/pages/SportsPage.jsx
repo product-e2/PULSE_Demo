@@ -5,6 +5,7 @@ export default function SportsPage() {
   const { state } = useDemo();
   const { adActivated, currentAct } = state;
   const isVision = currentAct === 4;
+  const isGameWon = currentAct === 3;
   return (
     <div className="min-h-full bg-gray-50">
       {/* Header */}
@@ -36,7 +37,7 @@ export default function SportsPage() {
       {/* Article area */}
       <div className="max-w-7xl mx-auto px-4 pb-12 flex gap-8">
         {/* Main column */}
-        <main className="w-[70%]">
+        <main className="flex-1 min-w-0">
           {/* Hero */}
           <div className="relative rounded-lg overflow-hidden bg-gradient-to-r from-red-600 to-amber-500 h-64 flex flex-col justify-end p-6">
             <span className="absolute top-4 left-4 bg-white/90 text-red-600 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded">
@@ -98,7 +99,7 @@ export default function SportsPage() {
         </main>
 
         {/* Sidebar */}
-        <aside className="w-[30%] space-y-6 mt-0">
+        <aside className="w-72 shrink-0 space-y-6 mt-0">
           {/* Odds table */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
             <div className="bg-gray-900 text-white px-4 py-2 flex items-center justify-between">
@@ -165,6 +166,41 @@ export default function SportsPage() {
                 </div>
                 <button className="mt-3 w-full bg-gradient-to-r from-red-600 to-red-800 text-white text-sm font-semibold py-2.5 rounded-lg hover:opacity-90 transition-opacity">
                   Place Combi Bet →
+                </button>
+                <p className="text-[10px] text-gray-400 mt-2">18+ | T&Cs apply</p>
+              </div>
+            </motion.div>
+          ) : adActivated && isGameWon ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+              className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden"
+              style={{ aspectRatio: '300/250' }}
+            >
+              <div className="bg-[#1a365d] text-white px-4 py-2 flex items-center justify-between">
+                <span className="text-sm font-bold">Tipico</span>
+                <span className="text-[10px] text-white/60 uppercase tracking-wider">Sponsored</span>
+              </div>
+              <div className="p-4 flex flex-col items-center justify-center h-[calc(100%-40px)]">
+                <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">Bundesliga Matchday 29</p>
+                <p className="font-bold text-gray-900 text-lg">Bayern vs Leipzig</p>
+                <div className="flex items-center gap-4 mt-3">
+                  <div className="text-center">
+                    <span className="text-xs text-gray-500 block">1</span>
+                    <span className="text-lg font-bold text-[#1a365d]">1.70</span>
+                  </div>
+                  <div className="text-center">
+                    <span className="text-xs text-gray-500 block">X</span>
+                    <span className="text-lg font-bold text-gray-600">3.80</span>
+                  </div>
+                  <div className="text-center">
+                    <span className="text-xs text-gray-500 block">2</span>
+                    <span className="text-lg font-bold text-amber-600">4.50</span>
+                  </div>
+                </div>
+                <button className="mt-3 bg-[#1a365d] text-white text-xs font-semibold px-6 py-2 rounded-lg hover:bg-[#2a4a7d] transition-colors">
+                  Bet Now →
                 </button>
                 <p className="text-[10px] text-gray-400 mt-2">18+ | T&Cs apply</p>
               </div>
