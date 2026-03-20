@@ -5,7 +5,7 @@ const DemoContext = createContext(null)
 const initialState = {
   currentAct: 1,
   pageType: 'sports',
-  widgetVisible: false,
+  widgetVisible: true,
   widgetOpen: false,
   panelVisible: true,
   overlayMinimized: false,
