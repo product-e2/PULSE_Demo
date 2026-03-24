@@ -1,27 +1,49 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { useDemo } from '../../state/DemoContext'
+import { useTenant } from '../../tenants/TenantContext'
 import { fireConfetti } from '../shared/Confetti'
 
-const SEGMENTS = [
-  { label: '100 Free Spins', color: '#7c3aed', prize: true },
-  { label: 'Try Again', color: '#1e1b4b', prize: false },
-  { label: '50 Free Spins', color: '#6d28d9', prize: true },
-  { label: 'JACKPOT', color: '#f59e0b', prize: true },
-  { label: 'Try Again', color: '#1e1b4b', prize: false },
-  { label: '25 Free Spins', color: '#5b21b6', prize: true },
+// Segment colors are derived from accentColor at render time
+const BASE_SEGMENTS = [
+  { label: '100 Free Spins', shade: 0, prize: true },
+  { label: 'Try Again', shade: -1, prize: false },
+  { label: '50 Free Spins', shade: 1, prize: true },
+  { label: 'JACKPOT', shade: -2, prize: true },
+  { label: 'Try Again', shade: -1, prize: false },
+  { label: '25 Free Spins', shade: 2, prize: true },
 ]
 
 // Always land on index 0 (100 Free Spins) — hardcoded win
 const WIN_INDEX = 0
 
+// Helper to derive shaded colors from a hex accent
+function shadeColor(hex, amount) {
+  const num = parseInt(hex.replace('#', ''), 16)
+  let r = (num >> 16) + amount * 20
+  let g = ((num >> 8) & 0x00ff) + amount * 20
+  let b = (num & 0x0000ff) + amount * 20
+  r = Math.max(0, Math.min(255, r))
+  g = Math.max(0, Math.min(255, g))
+  b = Math.max(0, Math.min(255, b))
+  return `rgb(${r},${g},${b})`
+}
+
 export default function SpinWheel() {
   const { setAct } = useDemo()
+  const { tenant } = useTenant()
+  const accentColor = tenant.widget?.accentColor || tenant.pulse?.accentColor || '#a855f7'
   const canvasRef = useRef(null)
   const [spinning, setSpinning] = useState(false)
   const [result, setResult] = useState(null)
   const angleRef = useRef(0)
   const rafRef = useRef(null)
+
+  // Build segments with accent-derived colors
+  const SEGMENTS = BASE_SEGMENTS.map((seg) => ({
+    ...seg,
+    color: seg.shade === -1 ? '#1e1b4b' : seg.shade === -2 ? '#f59e0b' : shadeColor(accentColor, seg.shade),
+  }))
 
   // Draw wheel
   const drawWheel = useCallback((rotation = 0) => {
@@ -71,7 +93,7 @@ export default function SpinWheel() {
     ctx.fillText('PULSE', 0, 4)
 
     ctx.restore()
-  }, [])
+  }, [SEGMENTS])
 
   useEffect(() => {
     drawWheel(0)
@@ -104,7 +126,7 @@ export default function SpinWheel() {
       } else {
         setSpinning(false)
         setResult(SEGMENTS[WIN_INDEX])
-        fireConfetti()
+        fireConfetti(['#fbbf24', accentColor, '#ffffff', '#ef4444'])
         // Move to Act 3 (Game Won) after brief pause
         setTimeout(() => setAct(3), 2000)
       }
@@ -133,7 +155,8 @@ export default function SpinWheel() {
           {[0, 1, 2].map((i) => (
             <motion.div
               key={i}
-              className="w-2 h-2 rounded-full bg-amber-500"
+              className="w-2 h-2 rounded-full"
+              style={{ backgroundColor: accentColor }}
               animate={{ opacity: [0.3, 1, 0.3] }}
               transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.2 }}
             />
@@ -146,7 +169,7 @@ export default function SpinWheel() {
   return (
     <div className="p-4 flex flex-col items-center gap-3">
       {/* Pointer */}
-      <div className="text-amber-500 text-2xl -mb-2">▼</div>
+      <div className="text-2xl -mb-2" style={{ color: accentColor }}>▼</div>
 
       {/* Canvas wheel */}
       <canvas
@@ -160,7 +183,8 @@ export default function SpinWheel() {
       <button
         onClick={spin}
         disabled={spinning}
-        className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold rounded-xl py-3 text-center hover:opacity-90 transition-opacity cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+        className="w-full text-white font-semibold rounded-xl py-3 text-center hover:opacity-90 transition-opacity cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+        style={{ backgroundColor: accentColor }}
       >
         {spinning ? 'Spinning...' : 'SPIN!'}
       </button>

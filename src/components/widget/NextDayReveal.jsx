@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useDemo } from '../../state/DemoContext'
+import { useTenant } from '../../tenants/TenantContext'
 
 export default function NextDayReveal() {
   const { revealBonus } = useDemo()
+  const { tenant } = useTenant()
+  const accentColor = tenant.widget?.accentColor || tenant.pulse?.accentColor || '#a855f7'
   const [revealedCount, setRevealedCount] = useState(0)
   const [showStreak, setShowStreak] = useState(false)
 
@@ -35,7 +38,7 @@ export default function NextDayReveal() {
   return (
     <div className="p-5">
       <div className="text-center mb-4">
-        <p className="text-purple-600 font-semibold text-sm uppercase tracking-wide">
+        <p className="font-semibold text-sm uppercase tracking-wide" style={{ color: accentColor }}>
           Match Complete
         </p>
         <h3 className="text-lg font-bold text-gray-900 mt-1">Bayern 3 - 1 Dortmund</h3>
@@ -75,7 +78,7 @@ export default function NextDayReveal() {
             className="mt-4 text-center"
           >
             <div className="text-3xl mb-2">🔥</div>
-            <p className="text-lg font-bold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
+            <p className="text-lg font-bold" style={{ color: accentColor }}>
               Perfect Streak — 3/3!
             </p>
             <p className="text-sm text-gray-500 mt-1">Unlocking your reward...</p>
@@ -83,7 +86,8 @@ export default function NextDayReveal() {
               {[0, 1, 2].map((i) => (
                 <motion.div
                   key={i}
-                  className="w-2 h-2 rounded-full bg-purple-500"
+                  className="w-2 h-2 rounded-full"
+                  style={{ backgroundColor: accentColor }}
                   animate={{ opacity: [0.3, 1, 0.3] }}
                   transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.2 }}
                 />

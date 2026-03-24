@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useDemo } from '../../state/DemoContext'
+import { useTenant } from '../../tenants/TenantContext'
 import { PREDICTIONS } from '../../data/mockData'
 
 const slideVariants = {
@@ -11,7 +12,10 @@ const slideVariants = {
 
 export default function StreakGame() {
   const { state, submitPrediction } = useDemo()
+  const { tenant } = useTenant()
   const { currentPrediction, predictions, predictionsLocked } = state
+
+  const accentColor = tenant.widget?.accentColor || tenant.pulse?.accentColor || '#a855f7'
 
   const [isTransitioning, setIsTransitioning] = useState(false)
 
@@ -39,7 +43,10 @@ export default function StreakGame() {
         animate={{ opacity: 1, y: 0 }}
         className="p-6 flex flex-col items-center text-center gap-4"
       >
-        <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center text-3xl">
+        <div
+          className="w-16 h-16 rounded-full flex items-center justify-center text-3xl"
+          style={{ backgroundColor: `${accentColor}15` }}
+        >
           🔒
         </div>
         <h3 className="text-lg font-bold text-gray-900">Predictions Locked!</h3>
@@ -51,7 +58,8 @@ export default function StreakGame() {
           {predictions.map((p, i) => (
             <div
               key={i}
-              className="bg-purple-100 text-purple-700 text-xs font-semibold px-3 py-1.5 rounded-full"
+              className="text-xs font-semibold px-3 py-1.5 rounded-full"
+              style={{ backgroundColor: `${accentColor}20`, color: accentColor }}
             >
               {PREDICTIONS[i]?.question.split('?')[0]}: {p.answer}
             </div>
@@ -73,7 +81,8 @@ export default function StreakGame() {
       {/* Progress bar */}
       <div className="h-1 bg-gray-100">
         <motion.div
-          className="h-full bg-gradient-to-r from-purple-500 to-blue-500"
+          className="h-full"
+          style={{ background: accentColor }}
           initial={false}
           animate={{ width: `${progressPercent}%` }}
           transition={{ duration: 0.3 }}
@@ -122,7 +131,7 @@ export default function StreakGame() {
                   key={opt}
                   onClick={() => handleOptionClick(opt)}
                   disabled={isTransitioning}
-                  className="flex-1 bg-gray-100 hover:bg-purple-100 text-gray-900 font-semibold rounded-xl py-3 text-center transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-900 font-semibold rounded-xl py-3 text-center transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   {opt}
                 </button>
@@ -137,12 +146,11 @@ export default function StreakGame() {
             <div
               key={i}
               className={`w-2.5 h-2.5 rounded-full transition-colors ${
-                i < currentPrediction
-                  ? 'bg-purple-500'
-                  : i === currentPrediction
-                    ? 'bg-purple-500'
-                    : 'border-2 border-gray-300 bg-white'
+                i <= currentPrediction
+                  ? ''
+                  : 'border-2 border-gray-300 bg-white'
               }`}
+              style={i <= currentPrediction ? { backgroundColor: accentColor } : undefined}
             />
           ))}
         </div>

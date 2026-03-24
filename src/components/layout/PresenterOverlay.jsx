@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { useDemo } from '../../state/DemoContext'
+import { useTenant } from '../../tenants/TenantContext'
 import { ACT_LABELS } from '../../data/actLabels'
 
 export default function PresenterOverlay() {
@@ -12,6 +13,8 @@ export default function PresenterOverlay() {
     toggleOverlay,
   } = useDemo()
 
+  const { tenant } = useTenant()
+  const pulse = tenant.pulse || {}
   const { currentAct, pageType, overlayMinimized } = state
 
   if (overlayMinimized) {
@@ -23,7 +26,7 @@ export default function PresenterOverlay() {
           onClick={toggleOverlay}
           className="text-[10px] px-3 py-1 rounded-t-md bg-black/50 backdrop-blur border border-white/10 border-b-0 text-gray-500 hover:text-white transition-colors cursor-pointer"
         >
-          ▲ Presenter
+          Presenter
         </motion.button>
       </div>
     )
@@ -46,14 +49,14 @@ export default function PresenterOverlay() {
               onClick={() => setAct(id)}
               className={`flex items-center gap-1.5 text-[11px] px-2.5 py-1.5 rounded-md transition-all cursor-pointer whitespace-nowrap ${
                 currentAct === id
-                  ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/20'
+                  ? `${pulse.accentBg || 'bg-purple-600'} text-white shadow-lg ${pulse.accentShadow || 'shadow-purple-500/20'}`
                   : id < currentAct
                     ? 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white'
                     : 'bg-gray-800/50 text-gray-500 hover:bg-gray-700 hover:text-gray-300'
               }`}
             >
               <span className={`font-mono text-[10px] ${
-                currentAct === id ? 'text-purple-200' : id < currentAct ? 'text-purple-400' : 'text-gray-600'
+                currentAct === id ? 'text-white/70' : id < currentAct ? (pulse.accentText || 'text-purple-400') : 'text-gray-600'
               }`}>{id}</span>
               <span>{label}</span>
               {/* Arrow between steps */}
@@ -64,23 +67,31 @@ export default function PresenterOverlay() {
         {/* Divider */}
         <div className="w-px h-5 bg-white/10 mx-1" />
 
+        {/* Tenant badge */}
+        <span className="text-xs text-gray-500 bg-gray-800 px-2 py-0.5 rounded">
+          {tenant.name}
+        </span>
+
+        {/* Divider */}
+        <div className="w-px h-5 bg-white/10 mx-1" />
+
         {/* Page toggle */}
         <div className="flex items-center bg-gray-800 rounded-md p-0.5">
           <button
             onClick={() => setPageType('sports')}
             className={`text-[10px] px-2.5 py-1 rounded transition-all cursor-pointer ${
-              pageType === 'sports' ? 'bg-gray-600 text-white' : 'text-gray-400 hover:text-white'
+              pageType === 'sports' ? `${pulse.accentBg || 'bg-gray-600'} text-white` : 'text-gray-400 hover:text-white'
             }`}
           >
-            ⚽ Sports
+            Sports
           </button>
           <button
             onClick={() => setPageType('casino')}
             className={`text-[10px] px-2.5 py-1 rounded transition-all cursor-pointer ${
-              pageType === 'casino' ? 'bg-gray-600 text-white' : 'text-gray-400 hover:text-white'
+              pageType === 'casino' ? `${pulse.accentBg || 'bg-gray-600'} text-white` : 'text-gray-400 hover:text-white'
             }`}
           >
-            🎰 Casino
+            Casino
           </button>
         </div>
 
@@ -93,21 +104,21 @@ export default function PresenterOverlay() {
           className="text-[10px] px-2 py-1 rounded text-gray-500 hover:text-white hover:bg-gray-700 transition-all cursor-pointer"
           title="Reset to start"
         >
-          ↺
+          Reset
         </button>
         <button
           onClick={togglePanel}
           className="text-[10px] px-2 py-1 rounded text-gray-500 hover:text-white hover:bg-gray-700 transition-all cursor-pointer"
           title="Toggle intelligence panel"
         >
-          ◧
+          Panel
         </button>
         <button
           onClick={toggleOverlay}
           className="text-[10px] px-2 py-1 rounded text-gray-500 hover:text-white hover:bg-gray-700 transition-all cursor-pointer"
           title="Hide toolbar"
         >
-          ▼
+          Hide
         </button>
       </div>
     </motion.div>

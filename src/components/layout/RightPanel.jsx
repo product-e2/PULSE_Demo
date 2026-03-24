@@ -1,10 +1,13 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useDemo } from '../../state/DemoContext'
+import { useTenant } from '../../tenants/TenantContext'
 import IntelligencePanel from '../intelligence/IntelligencePanel'
 
 export default function RightPanel() {
   const { state } = useDemo()
+  const { tenant } = useTenant()
   const { panelVisible } = state
+  const accentColor = tenant.sports?.accentColor || tenant.pulse?.accentColor || '#a855f7'
 
   return (
     <AnimatePresence>
@@ -15,10 +18,11 @@ export default function RightPanel() {
           exit={{ x: '100%', opacity: 0 }}
           transition={{ type: 'spring', damping: 26, stiffness: 200 }}
           className="w-[35%] flex-shrink-0 bg-[#0a0a12] border-l border-gray-800 font-mono flex flex-col overflow-hidden"
+          style={{ borderTop: `2px solid ${accentColor}` }}
         >
           {/* Header */}
           <div className="flex items-center gap-2 px-5 py-4 border-b border-gray-800">
-            <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+            <span className="h-2 w-2 rounded-full animate-pulse" style={{ backgroundColor: accentColor }} />
             <h2 className="text-sm text-gray-300 tracking-wide">
               What PULSE sees
             </h2>

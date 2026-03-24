@@ -1,8 +1,14 @@
 import { motion, AnimatePresence } from "framer-motion";
+import { useTenant } from "../../tenants/TenantContext";
 
 const featurePills = ["Zero config", "Auto-detection", "Multi-market", "CPA tracking"];
 
 export default function EmbedCodeOverlay({ visible = true }) {
+  const { tenant } = useTenant();
+  const accentColor = tenant.pulse?.accentColor || '#a855f7';
+  const publisher = tenant.embed?.publisher || 'kicker';
+  const geo = tenant.embed?.geo || 'DE';
+
   return (
     <AnimatePresence>
       {visible && (
@@ -22,7 +28,10 @@ export default function EmbedCodeOverlay({ visible = true }) {
             className="bg-gray-900/95 rounded-2xl p-8 max-w-lg border border-white/10 shadow-2xl"
           >
             {/* Pill label */}
-            <span className="inline-block bg-purple-500/20 text-purple-400 text-xs px-3 py-1 rounded-full mb-4">
+            <span
+              className="inline-block text-xs px-3 py-1 rounded-full mb-4"
+              style={{ backgroundColor: `${accentColor}33`, color: accentColor }}
+            >
               Integration
             </span>
 
@@ -30,7 +39,7 @@ export default function EmbedCodeOverlay({ visible = true }) {
             <h2 className="text-3xl font-bold text-white leading-tight mb-6">
               One line of code.
               <br />
-              <span className="text-purple-400">That's it.</span>
+              <span style={{ color: accentColor }}>That's it.</span>
             </h2>
 
             {/* Code block */}
@@ -45,23 +54,23 @@ export default function EmbedCodeOverlay({ visible = true }) {
                 <span className="text-gray-400">{"<"}</span>
                 <span className="text-sky-400">script</span>
                 <span className="text-gray-400">{" "}</span>
-                <span className="text-purple-400">src</span>
+                <span style={{ color: accentColor }}>src</span>
                 <span className="text-gray-400">{"="}</span>
                 <span className="text-emerald-400">{'"https://pulse.e2.at/widget.js"'}</span>
               </div>
 
-              {/*         data-publisher="kicker" */}
+              {/*         data-publisher="..." */}
               <div className="pl-12">
-                <span className="text-purple-400">data-publisher</span>
+                <span style={{ color: accentColor }}>data-publisher</span>
                 <span className="text-gray-400">{"="}</span>
-                <span className="text-emerald-400">{'"kicker"'}</span>
+                <span className="text-emerald-400">{`"${publisher}"`}</span>
               </div>
 
-              {/*         data-geo="DE"> */}
+              {/*         data-geo="..."> */}
               <div className="pl-12">
-                <span className="text-purple-400">data-geo</span>
+                <span style={{ color: accentColor }}>data-geo</span>
                 <span className="text-gray-400">{"="}</span>
-                <span className="text-emerald-400">{'"DE"'}</span>
+                <span className="text-emerald-400">{`"${geo}"`}</span>
                 <span className="text-gray-400">{">"}</span>
               </div>
 

@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { useDemo } from '../../state/DemoContext'
+import { useTenant } from '../../tenants/TenantContext'
 import {
-  INTEL_SCRIPTS,
+  getIntelScripts,
   PREDICTIONS,
 } from '../../data/mockData'
 import { getActLabel } from '../../data/actLabels'
@@ -36,6 +37,8 @@ function StaticBlock({ lines }) {
 
 export default function IntelligencePanel() {
   const { state, activateAd } = useDemo()
+  const { tenant } = useTenant()
+  const INTEL_SCRIPTS = useMemo(() => getIntelScripts(tenant), [tenant])
   const { currentAct } = state
 
   // Determine which scan script to use based on pageType
@@ -156,13 +159,19 @@ export default function IntelligencePanel() {
       default:
         return null
     }
-  }, [currentAct, state.intelligenceKey, state.pageType, scanScript, shownLines, newLines, onPredTypewriterComplete, activateAd])
+  }, [currentAct, state.intelligenceKey, state.pageType, scanScript, shownLines, newLines, onPredTypewriterComplete, activateAd, INTEL_SCRIPTS])
 
   return (
     <div className="relative flex h-full flex-col overflow-y-auto p-4" style={{ scrollBehavior: 'smooth' }}>
       {/* Act badge */}
       <div className="mb-3 flex items-center gap-2">
-        <span className="rounded-full bg-purple-500/20 px-2 py-0.5 text-xs font-semibold text-purple-400">
+        <span
+          className="rounded-full px-2 py-0.5 text-xs font-semibold"
+          style={{
+            backgroundColor: `${tenant.pulse?.accentColor || '#a855f7'}33`,
+            color: tenant.pulse?.accentColor || '#a855f7',
+          }}
+        >
           {currentAct}. {getActLabel(currentAct)}
         </span>
         <span className="text-xs text-gray-600">Intelligence Feed</span>

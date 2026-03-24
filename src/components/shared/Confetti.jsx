@@ -1,12 +1,12 @@
 import confetti from 'canvas-confetti'
 
-export function fireConfetti() {
+export function fireConfetti(colors = ['#fbbf24', '#a855f7', '#ffffff', '#ef4444']) {
   // Big center burst
   confetti({
     particleCount: 100,
     spread: 70,
     origin: { y: 0.6 },
-    colors: ['#fbbf24', '#7c3aed', '#ffffff', '#ef4444'],
+    colors,
   })
   // Left burst after 200ms
   setTimeout(() => {
@@ -15,7 +15,7 @@ export function fireConfetti() {
       angle: 60,
       spread: 55,
       origin: { x: 0, y: 0.6 },
-      colors: ['#fbbf24', '#7c3aed', '#ffffff'],
+      colors,
     })
   }, 200)
   // Right burst after 400ms
@@ -25,7 +25,7 @@ export function fireConfetti() {
       angle: 120,
       spread: 55,
       origin: { x: 1, y: 0.6 },
-      colors: ['#fbbf24', '#7c3aed', '#ffffff'],
+      colors,
     })
   }, 400)
 }

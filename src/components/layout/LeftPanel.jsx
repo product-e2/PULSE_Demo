@@ -1,12 +1,15 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useDemo } from '../../state/DemoContext'
+import { useTenant } from '../../tenants/TenantContext'
 import SportsPage from '../pages/SportsPage'
+import LiveScoreSportsPage from '../pages/LiveScoreSportsPage'
 import CasinoPage from '../pages/CasinoPage'
 import PulseWidget from '../widget/PulseWidget'
 import EmbedCodeOverlay from '../overlay/EmbedCodeOverlay'
 
 export default function LeftPanel() {
   const { state } = useDemo()
+  const { tenant } = useTenant()
   const { pageType, panelVisible, widgetVisible, showEmbedOverlay } = state
 
   return (
@@ -27,7 +30,7 @@ export default function LeftPanel() {
               transition={{ duration: 0.4 }}
               className="min-h-full"
             >
-              <SportsPage />
+              {tenant.sports.component === 'livescore' ? <LiveScoreSportsPage /> : <SportsPage />}
             </motion.div>
           ) : (
             <motion.div

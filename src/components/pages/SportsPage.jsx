@@ -1,28 +1,29 @@
 import { useDemo } from '../../state/DemoContext';
+import { useTenant } from '../../tenants/TenantContext';
 import { motion } from 'framer-motion';
 
 export default function SportsPage() {
   const { state } = useDemo();
+  const { tenant } = useTenant();
   const { adActivated, currentAct } = state;
   const isVision = currentAct === 4;
   const isGameWon = currentAct === 3;
   return (
     <div className="min-h-full bg-gray-50">
       {/* Header */}
-      <header className="bg-gray-900 text-white">
+      <header className={`${tenant.sports.headerBg} text-white`}>
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-8">
           <div className="flex flex-col">
-            <span className="text-2xl font-extrabold tracking-tight">Kicker</span>
-            <span className="h-0.5 w-full bg-red-600 rounded" />
+            <span className="text-2xl font-extrabold tracking-tight" style={{ color: tenant.sports.logoAccent }}>{tenant.sports.logo}</span>
+            <span className={`h-0.5 w-full ${tenant.sports.logoUnderline} rounded`} />
           </div>
           <nav className="flex items-center gap-4 text-sm text-gray-300">
-            <span className="hover:text-white cursor-pointer">Bundesliga</span>
-            <span className="text-gray-600">|</span>
-            <span className="hover:text-white cursor-pointer">Champions League</span>
-            <span className="text-gray-600">|</span>
-            <span className="hover:text-white cursor-pointer">2. Liga</span>
-            <span className="text-gray-600">|</span>
-            <span className="hover:text-white cursor-pointer">DFB-Pokal</span>
+            {tenant.sports.navItems.map((item, i) => (
+              <span key={item}>
+                {i > 0 && <span className="text-gray-600 mr-4">|</span>}
+                <span className="hover:text-white cursor-pointer">{item}</span>
+              </span>
+            ))}
           </nav>
         </div>
       </header>
@@ -39,8 +40,8 @@ export default function SportsPage() {
         {/* Main column */}
         <main className="flex-1 min-w-0">
           {/* Hero */}
-          <div className="relative rounded-lg overflow-hidden bg-gradient-to-r from-red-600 to-amber-500 h-64 flex flex-col justify-end p-6">
-            <span className="absolute top-4 left-4 bg-white/90 text-red-600 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded">
+          <div className={`relative rounded-lg overflow-hidden bg-gradient-to-r ${tenant.sports.heroGradient} h-64 flex flex-col justify-end p-6`}>
+            <span className={`absolute top-4 left-4 ${tenant.sports.tagBg} ${tenant.sports.tagText} text-xs font-bold uppercase tracking-wider px-3 py-1 rounded`}>
               Match Preview
             </span>
             <h1 className="text-3xl font-extrabold text-white leading-tight drop-shadow">
@@ -87,7 +88,7 @@ export default function SportsPage() {
           </article>
 
           {/* Pull quote */}
-          <blockquote className="border-l-4 border-red-500 pl-4 my-8 py-2">
+          <blockquote className={`border-l-4 ${tenant.sports.blockquoteBorder} pl-4 my-8 py-2`}>
             <p className="italic text-gray-600">
               &ldquo;We respect Dortmund, but at home we set the standard. The players are focused and
               hungry &mdash; this is a match we want to dominate from the first whistle.&rdquo;
@@ -116,7 +117,7 @@ export default function SportsPage() {
               <tbody>
                 <tr className="border-b border-gray-50">
                   <td className="px-4 py-2.5 font-medium text-gray-700">Bayern M&uuml;nchen</td>
-                  <td className="px-4 py-2.5 text-right font-semibold text-red-600">1.85</td>
+                  <td className={`px-4 py-2.5 text-right font-semibold ${tenant.sports.oddsHighlight}`}>1.85</td>
                 </tr>
                 <tr className="border-b border-gray-50">
                   <td className="px-4 py-2.5 font-medium text-gray-700">Draw</td>
@@ -144,8 +145,8 @@ export default function SportsPage() {
               </div>
               <div className="p-5 flex flex-col items-center">
                 <p className="text-xs text-red-600 font-semibold uppercase tracking-wide mb-2">Carlos, your combi bet is ready</p>
-                <p className="font-bold text-gray-900 text-lg">🔴⚫ Flamengo Combi</p>
-                <p className="text-xs text-gray-500 mt-1">Brasileirão — Flamengo vs Palmeiras</p>
+                <p className="font-bold text-gray-900 text-lg">Flamengo Combi</p>
+                <p className="text-xs text-gray-500 mt-1">Brasileir&atilde;o — Flamengo vs Palmeiras</p>
                 <div className="w-full mt-4 space-y-2">
                   <div className="flex items-center justify-between text-sm bg-red-50 rounded-lg px-3 py-2">
                     <span className="text-gray-700">Flamengo to win</span>
@@ -165,7 +166,7 @@ export default function SportsPage() {
                   <p className="text-2xl font-extrabold text-red-700">5.49</p>
                 </div>
                 <button className="mt-3 w-full bg-gradient-to-r from-red-600 to-red-800 text-white text-sm font-semibold py-2.5 rounded-lg hover:opacity-90 transition-opacity">
-                  Place Combi Bet →
+                  Place Combi Bet
                 </button>
                 <p className="text-[10px] text-gray-400 mt-2">18+ | T&Cs apply</p>
               </div>
@@ -200,7 +201,7 @@ export default function SportsPage() {
                   </div>
                 </div>
                 <button className="mt-3 bg-[#1a365d] text-white text-xs font-semibold px-6 py-2 rounded-lg hover:bg-[#2a4a7d] transition-colors">
-                  Bet Now →
+                  Bet Now
                 </button>
                 <p className="text-[10px] text-gray-400 mt-2">18+ | T&Cs apply</p>
               </div>
@@ -235,7 +236,7 @@ export default function SportsPage() {
                   </div>
                 </div>
                 <button className="mt-3 bg-[#1a365d] text-white text-xs font-semibold px-6 py-2 rounded-lg hover:bg-[#2a4a7d] transition-colors">
-                  Bet Now →
+                  Bet Now
                 </button>
                 <p className="text-[10px] text-gray-400 mt-2">18+ | T&Cs apply</p>
               </div>
@@ -249,10 +250,10 @@ export default function SportsPage() {
               <div className="p-4 flex flex-col items-center justify-center h-[calc(100%-40px)]">
                 <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">Limited Offer</p>
                 <p className="font-bold text-gray-900 text-base">Open Account Offer</p>
-                <p className="text-[#1a365d] font-bold text-lg mt-1">Bet €10 Get €30</p>
+                <p className="text-[#1a365d] font-bold text-lg mt-1">Bet $10 Get $30</p>
                 <p className="text-xs text-gray-500 mt-1">in Free Bets</p>
                 <button className="mt-3 bg-[#1a365d] text-white text-xs font-semibold px-6 py-2 rounded-lg">
-                  Join Now →
+                  Join Now
                 </button>
                 <p className="text-[10px] text-gray-400 mt-2">18+ | T&Cs apply | New customers only</p>
               </div>

@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useDemo } from '../../state/DemoContext'
+import { useTenant } from '../../tenants/TenantContext'
 import { fireConfetti } from '../shared/Confetti'
 import EmailGate from './EmailGate'
 
 export default function BonusReveal() {
   const { state } = useDemo()
+  const { tenant } = useTenant()
+  const accentColor = tenant.widget?.accentColor || tenant.pulse?.accentColor || '#a855f7'
   const { pageType } = state
   const [showEmail, setShowEmail] = useState(false)
 
@@ -15,8 +18,8 @@ export default function BonusReveal() {
 
   // Fire confetti on mount
   useEffect(() => {
-    fireConfetti()
-  }, [])
+    fireConfetti(['#fbbf24', accentColor, '#ffffff', '#ef4444'])
+  }, [accentColor])
 
   if (showEmail || state.emailSubmitted) {
     return <EmailGate submitted={state.emailSubmitted} />
@@ -33,7 +36,7 @@ export default function BonusReveal() {
 
       <p className="text-gray-500 text-sm">You've earned a</p>
 
-      <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
+      <h2 className="text-2xl font-bold" style={{ color: accentColor }}>
         {prize}
       </h2>
 
@@ -41,7 +44,8 @@ export default function BonusReveal() {
 
       <button
         onClick={() => setShowEmail(true)}
-        className="w-full bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold rounded-xl py-3 hover:opacity-90 transition-opacity cursor-pointer"
+        className="w-full text-white font-semibold rounded-xl py-3 hover:opacity-90 transition-opacity cursor-pointer"
+        style={{ backgroundColor: accentColor }}
       >
         Claim Now &rarr;
       </button>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useDemo } from '../../state/DemoContext'
+import { useTenant } from '../../tenants/TenantContext'
 import StreakGame from './StreakGame'
 import SpinWheel from './SpinWheel'
 import BonusReveal from './BonusReveal'
@@ -9,6 +10,7 @@ import NextDayReveal from './NextDayReveal'
 
 export default function PulseWidget() {
   const { state, toggleWidget } = useDemo()
+  const { tenant } = useTenant()
   const { currentAct, widgetOpen, widgetVisible, bonusRevealed, emailSubmitted } = state
 
   if (!widgetVisible) return null
@@ -27,7 +29,7 @@ export default function PulseWidget() {
             className="w-[360px] max-h-[520px] rounded-2xl shadow-2xl bg-white overflow-hidden flex flex-col"
           >
             {/* Header */}
-            <div className="bg-gradient-to-r from-purple-600 to-blue-500 px-5 py-3 flex items-center justify-between shrink-0">
+            <div className={`bg-gradient-to-r ${tenant.widget.gradient} px-5 py-3 flex items-center justify-between shrink-0`}>
               <span className="text-white font-bold text-lg tracking-wide">PULSE</span>
               <button
                 onClick={toggleWidget}
@@ -44,6 +46,7 @@ export default function PulseWidget() {
                 currentAct={currentAct}
                 bonusRevealed={bonusRevealed}
                 emailSubmitted={emailSubmitted}
+                tenant={tenant}
               />
             </div>
           </motion.div>
@@ -54,25 +57,25 @@ export default function PulseWidget() {
       {!widgetOpen && (
         <button
           onClick={toggleWidget}
-          className="w-14 h-14 rounded-full bg-gradient-to-br from-purple-600 to-blue-500 shadow-lg flex items-center justify-center text-white font-bold text-xl hover:scale-110 transition-transform cursor-pointer relative"
+          className={`w-14 h-14 rounded-full bg-gradient-to-br ${tenant.widget.bubbleBg} shadow-lg flex items-center justify-center text-white font-bold text-xl hover:scale-110 transition-transform cursor-pointer relative`}
           aria-label="Open PULSE widget"
         >
           <span className="relative z-10">P</span>
           {/* Pulse ring animation */}
-          <span className="absolute inset-0 rounded-full bg-purple-500 animate-ping opacity-30" />
+          <span className={`absolute inset-0 rounded-full ${tenant.widget.pingColor} animate-ping opacity-30`} />
         </button>
       )}
     </div>
   )
 }
 
-function WidgetBody({ currentAct, bonusRevealed, emailSubmitted }) {
+function WidgetBody({ currentAct, bonusRevealed, emailSubmitted, tenant }) {
   const { state } = useDemo()
   const isCasino = state.pageType === 'casino'
 
   switch (currentAct) {
     case 1:
-      return <WelcomeTeaser />
+      return <WelcomeTeaser tenant={tenant} />
     case 2:
       // Sports: pre-event prediction game / Casino: spin wheel
       return isCasino ? <SpinWheel /> : <StreakGame />
@@ -92,7 +95,7 @@ function WidgetBody({ currentAct, bonusRevealed, emailSubmitted }) {
   }
 }
 
-function WelcomeTeaser() {
+function WelcomeTeaser({ tenant }) {
   const { startPredicting, state } = useDemo()
   const isSports = state.pageType === 'sports'
 
@@ -101,7 +104,7 @@ function WelcomeTeaser() {
       <div className="p-6 flex flex-col items-center text-center gap-4">
         <div className="text-4xl">⚽</div>
         <div>
-          <p className="text-purple-600 font-semibold text-sm uppercase tracking-wide">
+          <p className="font-semibold text-sm uppercase tracking-wide" style={{ color: tenant.widget.accentColor }}>
             Predict & Win
           </p>
           <h3 className="text-xl font-bold text-gray-900 mt-1">
@@ -110,7 +113,7 @@ function WelcomeTeaser() {
           <p className="text-gray-500 text-sm mt-1">Bundesliga Matchday 28</p>
         </div>
         <div className="w-full space-y-2 mt-1">
-          <div className="flex items-center gap-3 bg-purple-50 rounded-lg p-3 text-left">
+          <div className={`flex items-center gap-3 ${tenant.widget.bgLight} rounded-lg p-3 text-left`}>
             <span className="text-xl">🏆</span>
             <div>
               <p className="text-sm font-semibold text-gray-900">3-Question Streak</p>
@@ -120,7 +123,7 @@ function WelcomeTeaser() {
         </div>
         <button
           onClick={startPredicting}
-          className="w-full mt-1 bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold rounded-xl py-3 px-4 text-center hover:opacity-90 transition-opacity cursor-pointer"
+          className={`w-full mt-1 bg-gradient-to-r ${tenant.widget.gradient} text-white font-semibold rounded-xl py-3 px-4 text-center hover:opacity-90 transition-opacity cursor-pointer`}
         >
           Start Predicting →
         </button>
